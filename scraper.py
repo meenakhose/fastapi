@@ -8,6 +8,7 @@ def scrap_meshoo(base_url: str, pages: int = 1):
     all_class = [
         'sc-dkrFOg ProductListItem__GridCol-sc-1baba2g-0 dAbGbG kdQjpv',
         'sc-dkrFOg Pagestyled__ColStyled-sc-ynkej6-2 eSAbia rttYu',
+        'sc-dkrFOg Pagestyled__ColStyled-sc-ynkej6-2 eSAbia rttYu'
     ]
 
     product = []
