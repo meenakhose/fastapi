@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+'''from bs4 import BeautifulSoup
 import requests as r
 import pandas as pd
 from datetime import datetime
@@ -68,4 +68,42 @@ def scrap_meshoo(base_url: str, pages: int = 1):
         ]
     }
 
-    return JSONResponse(content=all_data)
+    return JSONResponse(content=all_data)'''
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+from datetime import datetime
+
+def scrap_meshoo(base_url: str, pages: int):
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+
+    results = []
+    try:
+        for page in range(1, pages + 1):
+            url = f"{base_url}&page={page}"
+            driver.get(url)
+
+            driver.implicitly_wait(5)
+
+            products = driver.find_elements(By.CSS_SELECTOR, "a[href*='/item/']")
+            for p in products:
+                try:
+                    name = p.find_element(By.CLASS_NAME, "Text__StyledText-sc-oo0kvp-0").text
+                    price = p.find_element(By.CLASS_NAME, "Text__StyledText-sc-oo0kvp-0.bZNoZL").text
+                    results.append({"name": name, "price": price})
+                except:
+                    continue
+    finally:
+        driver.quit()
+
+    return {
+        "Scrap_time": str(datetime.utcnow()),
+        "Total_products": len(results),
+        "Data": results
+    }
